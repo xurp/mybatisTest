@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!--根节点 -->
+<generatorConfiguration>
+
+  <classPathEntry  location="C:\apache-maven-3.6.0-bin\apache-maven-3.6.0\repo\mysql\mysql-connector-java\5.1.45\mysql-connector-java-5.1.45.jar" /><!--驱动包的绝对路径-->    
+  
+   <!-- 不要用MyBatis3Simple否则没有sql语句生成 -->
+  <context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">
+    
+    <property name="javaFileEncoding" value="UTF-8"/>
+    <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+      <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+      <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
+      <property name="caseSensitive" value="true"/>
+    </plugin>
+
+    <!--读取 property 内填写的值,注意&要写成&amp;，因为这是直接在xml里写-->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                    connectionURL="jdbc:mysql://localhost:3306/jwt?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false"
+                    userId="root"
+                    password="">
+    </jdbcConnection>
+
+<!-- pojo -->   
+    <javaModelGenerator targetPackage="com.example.mybatisTest.model" targetProject="mybatisTest/src/main/java"/>
+<!--mapper映射文件生成所在的目录 为每一个数据库的表生成对应的SqlMap文件 -->
+    <sqlMapGenerator targetPackage="mybatis.mapper"  targetProject="mybatisTest/src/main/resources"/>
+<!-- targetPackage：mapper接口dao生成的位置 -->
+    <javaClientGenerator targetPackage="com.example.mybatisTest.dao" targetProject="mybatisTest/src/main/java" type="XMLMAPPER" />
+    
+    
+    
+    <!-- 要生成的table.如果生成user表的话会串表？即所有数据库的user表都会导入User.java. false的那些是不生成example类 -->
+
+            <table tableName="user_copy"  ></table>
+    
+    
+    </context>
+    <!-- 遇到的坑：
+1：有些文章中，targetProject处填写 src/main/java or resources 但实践中发现会出错，提示无法找到src项目。在src前面加入 项目名称即可（此处为SpringBootDF）
+2： 关于 targetPackage , 在resources中new package 但显示的还是文件夹的样式，于是我在targetPackage中填入了 mybatis/mapper 结果被编译器教育。尝试修改成 mybatis.mapper 即可
+3: 在使用 mybatis generator 时无法生成，一直提示无法找到config.properties 文件。google大法+百度大法+重启电脑大法+想念了一会周老师 后更新 eclipse 的generator插件后 解决。 -->
+</generatorConfiguration>
